@@ -1,4 +1,9 @@
 <?php
+
+/*
+ * From PHP.NET http://php.com
+ * commented by Andrew Moore under http://php.net/manual/de/function.uniqid.php
+ */
 class UUID {
 	
 	public static function v3($namespace, $name) {

@@ -1,7 +1,5 @@
 <?php
-
-
-/**
+/*
  * 
  * @modified by Mohamad Zeinali mohammad.basu@gmail.com
  * 
