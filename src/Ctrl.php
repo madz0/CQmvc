@@ -54,6 +54,21 @@ class Ctrl {
 	
 		$callingClass = get_called_class();
 		
+		if (false !== ($lastNsPos = strripos($class, '\\'))) {
+				
+			$namespace = substr($class, 0, $lastNsPos);
+			$className = substr($class, $lastNsPos + 1);
+			$fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+				
+			$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+			if (file_exists($fileName)) {
+
+				include_once $fileName;
+				return;
+			}
+		}
+		
 		if (file_exists('View/' . $class . '.php')) {
 	
 			include 'View/' . $class . '.php';
