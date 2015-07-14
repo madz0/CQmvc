@@ -23,8 +23,18 @@
  */
 class DefaultRoute extends Route {
 	
-	public function getDefaultPath() {
+	public function getDefaultPath($path = null) {
 		
 		return "/Test/Index";
+	}
+	
+	public function getNotFoundPath($path = null) {
+	
+		/*
+		 * I just use the default path to answer not founds. But you can handle them differently.
+		 * like 
+		 * return "/Oopse/notFound";
+		 */
+		return $this->getDefaultPath($path);
 	}
 }

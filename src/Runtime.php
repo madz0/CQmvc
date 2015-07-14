@@ -48,18 +48,14 @@ class Runtime {
 	 */
 	private $params;
 	
-	private $url;
+	public static $PARAMS_QUERY="CQMVC_RUNTIME_url_9876786554333AdxZsssErCCCPPRFAwds_X_e";
 	
-	public static $PARAMS_QUERY="url_9876786554333AdxZsssErCCCPPRFAwds_X_e";
-	
-	public function __construct($url) {
+	public function __construct(array $params, $url) {
 		
-		if($url==null) {
+		if($params == null) {
 			
 			return;
 		}
-		
-		$this->url = $url;
 		
 		$this->params = array();
 		
@@ -130,8 +126,6 @@ class Runtime {
 
 		try {
 			
-			$params = explode('/', $url);
-			
 			$pCount = count($params);
 			
 			if( $pCount > 1) {
@@ -149,7 +143,50 @@ class Runtime {
 					include_once $ctrl_path;
 
 					chdir('App');
-					$this->populate($contrl, $view, $params);
+					
+					try {
+						
+						$this->populate($contrl, $view, $params);
+						
+					} catch (ReflectionException $e) {
+						
+						chdir('../');
+						include_once 'Route.php';
+						include_once 'App/Route/DefaultRoute.php';
+						
+						$route = new DefaultRoute();
+						
+						$path = $route->getNotFoundPath($url);
+						
+						if(isset($path) && !is_null($path)) {
+						
+							$params = explode('/', $path);
+						
+							if(count($params) > 1) {
+						
+								new Runtime($params, $url);
+							}
+						}
+					}
+				}
+				else {
+
+					include_once 'Route.php';
+					include_once 'App/Route/DefaultRoute.php';
+					
+					$route = new DefaultRoute();
+					
+					$path = $route->getNotFoundPath($url);
+					
+					if(isset($path) && !is_null($path)) {
+					
+						$params = explode('/', $path);
+					
+						if(count($params) > 1) {
+					
+							new Runtime($params, $url);
+						}
+					}
 				}
 			}
 		}
@@ -516,10 +553,12 @@ class Runtime {
 	    return $result; 
 	}
 	
-	function endsWith($haystack, $needle)
-	{
+	function endsWith($haystack, $needle) {
+		
 		$length = strlen($needle);
+		
 		if ($length == 0) {
+			
 			return true;
 		}
 	
@@ -531,16 +570,30 @@ $url = $_GET[Runtime::$PARAMS_QUERY];
 
 if(isset($url) && !is_null($url) && $url != "") {
 
-	new Runtime($url);
+	$params = explode('/', $url);
+	
+	if(count($params) > 1) {
+
+		new Runtime($params, $url);
+		return;
+	}
 }
-else {
 
-	include_once 'Route.php';
-	include_once 'App/Route/DefaultRoute.php';
-	
-	$route = new DefaultRoute();
-	
-	$route->setClientsAddress($_SERVER['REMOTE_ADDR']);
+include_once 'Route.php';
+include_once 'App/Route/DefaultRoute.php';
 
-	new Runtime($route->getDefaultPath());
+$route = new DefaultRoute();
+
+$route->setClientsAddress($_SERVER['REMOTE_ADDR']);
+
+$path = $route->getDefaultPath($url);
+
+if(isset($path) && !is_null($path)) {
+
+	$params = explode('/', $path);
+	
+	if(count($params) > 1) {
+	
+		new Runtime($params, $path);
+	}
 }

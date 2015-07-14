@@ -60,5 +60,15 @@ class Route {
 	
 		return $_COOKIE[$key];
 	}
+	
+	protected function getDefaultPath($path = null) {
+		
+		return null;
+	}
+	
+	protected function getNotFoundPath($path = null) {
+	
+		return null;
+	}
 }
 ?>
