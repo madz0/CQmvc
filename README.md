@@ -1,8 +1,8 @@
 # CQmvc
-==============
 
 A Quick And Clean PHP MVC Framework
 CQmvc is a PHP MVC Framework that is a lightweight and Clean and Quick implementation IMHO.
+==============
 
 It's focus is on Request Model Bindings, Reducing need to imports or includes ,Creating a Clean and Quick Design with the help of Action Parameters Maping and View Constructors and Isolationg Controller-Action-View logic from UI Scripts, Creating a Quick yet easy to troubleshoot errors with forcing Developers to use PHP Type Hints, Handling MVC base URLs in base Controller and so in.
 --------------------------------------------------------------------------
