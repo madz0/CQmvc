@@ -2,7 +2,7 @@
 /*
  * CQMvc A PHP MVC Framework
  *
- * Copyright 2015 by Mohamad Zeinali mohamad.basu@gmail.com
+ * Copyright 2015 by Mohamad Zeinali mohammad.basu@gmail.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
