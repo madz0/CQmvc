@@ -346,6 +346,214 @@ Every file you post, is converted to the FileBase object that has some helper me
 
 You also can post multi dimentional arrays and ...
 
+
+**2) Request Routing, Request Cycle And Handle Not Found**
+
+Every HTTP Request consists of a path information. For example when one tries to reach 
+
+http://some-site.com/P1/P2/.../Pn-1/Pn
+
+It asks the web service to get contents of Pn that is inside the P1/P2/.../Pn-1
+
+In CQmvc, Pn is representing an Action function inside the Pn-1 Controller.
+
+So if someone asks http://some-site.com/News/showNews?id=1
+
+Then as the developer, you should have the News Controller and the showNews Action inside it.
+
+CQmvc maps and routes requests to the Controllers and Actions inside them.
+
+With this model, now every Query Strings and/or Post Request fields is mapped to the Action's Arguments.
+
+So the correct way to define the showNews Action will be:
+
+```
+class News extends Ctrl {
+
+	public function showNews($id = 0) {
+	
+		/*
+		 * now do what ever you like.
+		 * for example I get news from the database
+		 * using $id and pass the resualt to a view
+		 * that I've already defined.
+		 *
+		 ** Also note that $db_connectoin is not a real thing
+		 ** inside framework. Like we talked before, your Database
+		 ** technology is something up to you.
+		 */
+		 
+		 $query_array = $db_connectoin->prepareExecute("Select * From NewsTable Where id = $id");
+		 
+		 $this->view(new MyShowNewsView($query_array));
+		 
+		 return $this->render();  
+	}
+}
+```
+And the View is like
+
+```
+class MyShowNewsView extends View {
+	
+	/**
+	* @var array
+	*/
+	public $newsResult;
+	
+	public function __construct(array $newsresult = null) {
+	
+		/*
+		 * Here if you'd prefer, you can do some UI logic.
+		 * for example create a UI object and fill it from
+		 * the receivd array.
+		 */
+		 
+		 $this->newsResult = $newsresult;
+	}
+}
+
+```
+
+And finally my View Script
+
+```html
+<?php
+
+$newsArray = $this->newsResult;
+
+?>
+
+<!DOCTYPE html />
+
+<html>
+<body>
+<?php
+if(is_null($newsArray)) {
+
+	print 'No result fount';
+}
+else {
+
+	foreach($newsArray as $n) {
+	
+		//do and print some stuff
+	}
+}
+?>
+</body>
+</html>
+```
+
+And this is exactly how most requests get mapped and routed until some stuff is printed
+in the client's browser.
+
+In some other situations, you may want to stop request handling cycle in its early stages.
+
+For example you create an Action that is only outputs simple string for AXAJ calls or 
+even JSON or XML results. So you don't want to do all those View things. Then you could do
+
+```
+class News extends Ctrl {
+
+	public function getAjaxResult() {
+	
+		$result = $thing->do_something();
+		
+		if(result) {
+		
+			return "Yes";
+		}
+		
+		return "No";
+	}
+}
+```
+
+In some other cases, only the Controller or View is not enough for your application.
+For example you have another part in your PATH representing the language. Like
+
+http://some-site.com/en-US/News/showNews
+
+In that case, once CQmvc detected the News Controller and the showNews Action, it'll pass an array
+containing all PATH parts to the constructor of the Controller.
+So if you are interested to them, you could do
+
+```
+class News extends Ctrl {
+
+	public function __construct() {
+	
+		//Don't forget to call parent constructor first 
+		parent::__construct();
+		
+		$path = func_get_arg(0);
+		
+		if(isset($path)) {
+		
+			if($path[0] == 'en-US') {
+				
+				//do something
+			}
+		}
+	}
+}
+```  
+
+As we talked befor, every HTTP request comes with a PATH information. Now what are we going to do
+if someone just hit the http://some-site.com in the browser?
+There is no Ccanontroller and View in this request.
+Here, the Default Route starts its role.
+
+Always there should be a Route folder inside every App folder that holds the DefaultRoute.php file.
+
+DefaultRoute.php contains the DefaultRoute class.
+
+'''
+class DefaultRoute extends Route {
+	
+	public function getDefaultPath($path = null) {
+		
+		return "/Test/Index";
+	}
+	
+	public function getNotFoundPath($path = null) {
+	
+		/*
+		 * I just use the default path to answer not founds. But you can handle them differently.
+		 * like 
+		 * return "/Oopse/notFound";
+		 */
+		return $this->getDefaultPath($path);
+	}
+} 
+'''
+
+If CQmvc could not find any candidates for Controller Or View in the PATH, it calls the getDefaultPath
+function inside your DefaultRoute class and pass the current PATH as a string to the function. You can decide
+what is the proper PATH for current request.
+
+For example take the above DefaultRoute class taken from the source code. Here no matter what,
+I answer the framework to serve /Test/Index everytime it asks for the default route.
+
+Depending of your case, you could do something dynamic. For example imagen you expect this PATH for a request:
+
+/lang/Controller/View
+
+One better example could be
+
+http://some-site.com/en-US/News/showNews
+
+Now someone asks http://some-site.com/en-US/
+
+inside getDefaultPath you can check if the path only contains "en-US" you return your home page
+with english contents:
+
+return "/en-Us/Home/index";
+
+The Other function (getNotFoundPath) is called when CQmvc could not find the Controller or the Action
+brought by the PATH.   
+
 CQmvc also provides Templating using Master View Technique. Models and ViewModels can be passed to Views by Constructors directly or assign to View Class Fields. Checkout the example provided with the source inside App folder.
 
 CQmvc also has some helper Classes like SimpleCaptcha from (https://github.com/claviska/simple-php-captcha) Converted to a suitable Class and a UUID Class directly copy and pasted from http://php.net/manual/de/function.uniqid.php. Also there is a Store Class for serializatoins and Also a Simple Validator Class.

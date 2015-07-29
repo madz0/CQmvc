@@ -597,3 +597,17 @@ if(isset($path) && !is_null($path)) {
 		new Runtime($params, $path);
 	}
 }
+else {
+	
+	$path = $route->getNotFoundPath($url);
+	
+	if(isset($path) && !is_null($path)) {
+	
+		$params = explode('/', $path);
+	
+		if(count($params) > 1) {
+	
+			new Runtime($params, $path);
+		}
+	}
+}
