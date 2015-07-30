@@ -88,7 +88,7 @@ View -> this folder contains View Classes and Scripts
 Route -> this folder contains Route Class(es)
 ```
 
-Those three folders are the main folders of any Applications. In CQmvc, there is a consept of Classpath. Meaning, some folders are in Frameworks Classpath and every classes that you put in there, with a few Rules, can be seen by Controllers and Views and thus no need to include or imports or whatever. This can be a greate saving in developers coding time.
+Those three folders are the main folders of any Application. In CQmvc, there is a consept of Classpath. Meaning, some folders are in Frameworks Classpath and every classes that you put in there, with a few Rules, can be seen by Controllers and Views and thus no need to include or imports or whatever. This can be a greate saving in developers coding time.
 
 These Classpath folders are:
 
