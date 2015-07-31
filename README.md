@@ -509,7 +509,7 @@ Always there should be a Route folder inside every App folder that holds the Def
 
 DefaultRoute.php contains the DefaultRoute class.
 
-'''
+```
 class DefaultRoute extends Route {
 	
 	public function getDefaultPath($path = null) {
@@ -527,7 +527,7 @@ class DefaultRoute extends Route {
 		return $this->getDefaultPath($path);
 	}
 } 
-'''
+```
 
 If CQmvc could not find any candidates for Controller Or View in the PATH, it calls the getDefaultPath
 function inside your DefaultRoute class and pass the current PATH as a string to the function. You can decide
