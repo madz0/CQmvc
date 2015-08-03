@@ -502,7 +502,7 @@ class News extends Ctrl {
 
 As we talked befor, every HTTP request comes with a PATH information. Now what are we going to do
 if someone just hit the http://some-site.com in the browser?
-There is no Ccanontroller and View in this request.
+There is no Controller and View in this request.
 Here, the Default Route starts its role.
 
 Always there should be a Route folder inside every App folder that holds the DefaultRoute.php file.
