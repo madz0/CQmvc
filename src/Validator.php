@@ -110,8 +110,20 @@ class Validator {
 	}
 	
 	public function isValidDnsLable() {
+		
+		$w = $this->words;
+		
+		if(strrpos($this->words,"*.") === 0) {
+			
+			$w = substr($w, 2);
+		}
+		
+		if($w === '') {
+			
+			return true;
+		}
 	
-		if (!preg_match("/^[a-z0-9][a-z0-9\-\.]*?(?<=[a-z0-9])$/i",$this->words)) {
+		if (!preg_match("/^[a-z0-9][a-z0-9\-\.]*?(?<=[a-z0-9])$/i",$w)) {
 	
 			return false;
 		}
@@ -120,8 +132,25 @@ class Validator {
 	}
 	
 	public function isValidDnsHostname() {
+		
+		$w = $this->words;
+		
+		if(strrpos($this->words,"*.") === 0) {
+				
+			$w = substr($w, 2);
+		}
+		
+		if($this->endsWith(".")) {
+			
+			$w = substr($w, 0, strlen($w) -1);
+		}
+		
+		if($w === '') {
+				
+			return false;
+		}
 	
-		if (!preg_match("/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/",$this->words)) {
+		if (!preg_match("/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/",$w)) {
 	
 			return false;
 		}
