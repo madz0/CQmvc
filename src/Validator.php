@@ -131,6 +131,23 @@ class Validator {
 		return true;
 	}
 	
+	public function isValidDnsLableNoWildCard() {
+	
+		$w = $this->words;
+	
+		if($w === '') {
+				
+			return true;
+		}
+	
+		if (!preg_match("/^[a-z0-9][a-z0-9\-\.]*?(?<=[a-z0-9])$/i",$w)) {
+	
+			return false;
+		}
+	
+		return true;
+	}
+	
 	public function isValidDnsHostname() {
 		
 		$w = $this->words;
@@ -147,6 +164,28 @@ class Validator {
 		
 		if($w === '') {
 				
+			return false;
+		}
+	
+		if (!preg_match("/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/",$w)) {
+	
+			return false;
+		}
+	
+		return true;
+	}
+	
+	public function isValidDnsHostnameNoWildCard() {
+	
+		$w = $this->words;
+	
+		if($this->endsWith(".")) {
+				
+			$w = substr($w, 0, strlen($w) -1);
+		}
+	
+		if($w === '') {
+	
 			return false;
 		}
 	
