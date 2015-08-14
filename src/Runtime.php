@@ -366,7 +366,12 @@ class Runtime {
 			}
 		}
 			
-		$method->invokeArgs($c,$params);
+		$resul = $method->invokeArgs($c,$params);
+		
+		if(isset($resul) && !is_null($resul) && $resul != '' && $resul !== '') {
+			
+			print $resul;
+		}
 	}
 	
 	public function populateComplex($params, & $root, $chains, $value) {

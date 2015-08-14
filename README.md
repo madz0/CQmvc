@@ -462,11 +462,10 @@ class News extends Ctrl {
 		
 		if(result) {
 		
-			print "Yes";
-			return; 
+			return "Yes";
 		}
 		
-		print "No";
+		return "No";
 	}
 }
 ```
