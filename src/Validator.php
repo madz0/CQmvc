@@ -71,7 +71,7 @@ class Validator {
 	
 	public function isValidName() {
 		
-		if (!preg_match("/^[a-zA-Z ]*$/",$this->words)) {
+		if (!preg_match("/^[a-zA-Z ]{3,}$/",$this->words)) {
 			
 			return false;
 		}
@@ -112,6 +112,11 @@ class Validator {
 	public function isValidDnsLable() {
 		
 		$w = $this->words;
+		
+		if($w == '*') {
+				
+			return true;
+		}
 		
 		if(strrpos($this->words,"*.") === 0) {
 			

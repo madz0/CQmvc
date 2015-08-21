@@ -557,3 +557,16 @@ brought by the PATH.
 CQmvc also provides Templating using Master View Technique. Models and ViewModels can be passed to Views by Constructors directly or assign to View Class Fields. Checkout the example provided with the source inside App folder.
 
 CQmvc also has some helper Classes like SimpleCaptcha from (https://github.com/claviska/simple-php-captcha) Converted to a suitable Class and a UUID Class directly copy and pasted from http://php.net/manual/de/function.uniqid.php. Also there is a Store Class for serializatoins and Also a Simple Validator Class.
+
+Validator can be used to validate
+
+1) Length of a string
+2) Strngth of a password
+3) Valid email address
+4) Valid names
+5) Valid urls
+6) Valid ip v4 and v6
+7) Valid dns lables
+8) Valid dns lables with wildcard (*)
+9) Valid dns names and dns names with wild card
+10) Check if a string starts or ends with some other string
