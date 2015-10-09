@@ -30,6 +30,7 @@ include_once 'SimpleCaptcha.php';
 include_once 'Validator.php';
 include_once 'MvcUrl.php';
 include_once 'Route.php';
+include_once 'Crypto.php';
 
 class Ctrl {
 
@@ -294,6 +295,12 @@ class Ctrl {
 	protected function restoreSession($key) {
 
 		return @$_SESSION[$key];
+	}
+	
+	protected function destroySession() {
+	
+		session_unset();
+		session_destroy();
 	}
 	
 	protected function storeCookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = '', $httponly = '') {
