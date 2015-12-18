@@ -56,7 +56,7 @@ class Runtime {
 			
 			return;
 		}
-		
+
 		$this->params = array();
 		
 		foreach ($_GET as $index=>$value) {
@@ -66,18 +66,18 @@ class Runtime {
 				$this->params[$index] = $value;
 			}
 		}
-		
+
 		foreach ($_POST as $index=>$value) {
 
 			$this->params[$index] = $value;
 		}
 		
-		@include_once 'FileBase.php';
+		include_once 'FileBase.php';
 		
 		foreach ($_FILES as $index=>$value) {
 			
 			if(is_array($value['name'])) {
-
+				
 				$arrFile = $this->diverse_array($value);
 				
 				$previousValue = $this->params[$index];
@@ -119,7 +119,7 @@ class Runtime {
 				$fileBase->error = $value['error'];
 				$fileBase->type = $value['type'];
 				$fileBase->size = $value['size'];
-					
+
 				$this->params[$index] = $fileBase;
 			}
 		}
@@ -134,7 +134,7 @@ class Runtime {
 				
 				$view = $params[$pCount-1];
 				
-				include_once 'Ctrl.php';
+				@include_once 'Ctrl.php';
 
 				$ctrl_path = "App/Control/$contrl.php";
 				
@@ -160,7 +160,7 @@ class Runtime {
 						
 						if(isset($path) && !is_null($path)) {
 						
-							$params = explode('/', $path);
+							$params = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
 						
 							if(count($params) > 1) {
 						
@@ -171,7 +171,7 @@ class Runtime {
 				}
 				else {
 
-					@include_once 'Route.php';
+					include_once 'Route.php';
 					include_once 'App/Route/DefaultRoute.php';
 					
 					$route = new DefaultRoute();
@@ -180,7 +180,7 @@ class Runtime {
 					
 					if(isset($path) && !is_null($path)) {
 					
-						$params = explode('/', $path);
+						$params = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
 					
 						if(count($params) > 1) {
 					
@@ -284,19 +284,23 @@ class Runtime {
 			$is_found = false;
 			
 			if($td->type == TypeDescriptor::$TYPE_OBJ) {
-					
+
 				$nameIndex = $td->name.'->';
 				
 				$objArr = array();
 				
 				foreach ($this->params as $var => $value) {
-
+					
 					$idx = strpos($var, $nameIndex, 0);
 					if( $idx !== false && $idx == 0 ) {
 
 						$objArr[$var] = $value;
 						$is_found = true;
 					}
+					/* else if(strpos($var, $td->name, 0) !== false) {
+						$objArr[$var] = $value;
+						$is_found = true;
+					} */
 				}
 				
 				if($is_found) {
@@ -318,7 +322,7 @@ class Runtime {
 				
 				$name = $td->name;
 				$is_found = false;
-					
+
 				$nameIndex = $td->name.'{';
 				
 				$objArr = array();
@@ -334,7 +338,7 @@ class Runtime {
 				}
 				
 				if($is_found) {
-
+					
 					$root = array();
 					$this->populateComplex($objArr, $root, null, null);
 					$params[] = $root;
@@ -395,37 +399,6 @@ class Runtime {
 					
 					if(isset($chains[1])) {
 						
-						/*$chains = explode('}', $chains[1], 2);
-						$property = $chains[0];
-						
-						$newRoot = null;
-						
-						if(isset($property)) {
-
-							if(!isset($root[$property])) {
-								
-								$newRoot = new stdClass();
-								$root[$property] = $newRoot;
-							}
-							else {
-							
-								$newRoot = $root[$property];
-							}	
-						}
-						else {
-
-							$newRoot = new stdClass();
-							$root[] = $newRoot;
-						}
-						
-						if(isset($chains[1]) && $chains[1] != '') {
-						
-							if($chains[1][0] == '-' && $chains[1][1] == '>') {
-						
-								$chains[1] = substr($chains[1],2);
-							}
-						} */
-						
 						$chains[1] = '{'.$chains[1];
 
 						$this->populateComplex(null,$root, $chains[1], $value);
@@ -434,12 +407,26 @@ class Runtime {
 				else {
 						
 					if(is_object($value)) {
-							
-						$root[$chains[0]] = $value;
+						
+						if(is_array($root)) {
+
+							$root[$chains[0]] = $value;
+						}
+						else {
+
+							$root = $value;
+						}
 					}
 					else {
 							
-						$root[$chains[0]] = trim($value);
+						if(is_array($root)) {
+						
+							$root[$chains[0]] = trim($value);
+						}
+						else {
+						
+							$root = trim($value);
+						}
 					}
 				}
 			}
@@ -454,8 +441,7 @@ class Runtime {
 				$chains = explode('->', $chains, 2);
 				
 				if(!isset($chains[0])) {
-					
-						
+		
 				}
 				
 				if(!isset($root->{$chains[0]})) {
@@ -575,7 +561,7 @@ $url = @$_GET[Runtime::$PARAMS_QUERY];
 
 if(isset($url) && !is_null($url) && $url != "") {
 
-	$params = explode('/', $url);
+	$params = preg_split('/\//', $url, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $url);
 	
 	if(count($params) > 1) {
 
@@ -595,7 +581,7 @@ $path = $route->getDefaultPath($url);
 
 if(isset($path) && !is_null($path)) {
 
-	$params = explode('/', $path);
+	$params = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
 	
 	if(count($params) > 1) {
 	
@@ -608,7 +594,7 @@ else {
 	
 	if(isset($path) && !is_null($path)) {
 	
-		$params = explode('/', $path);
+		$params = preg_split('/\\//', $url, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
 	
 		if(count($params) > 1) {
 	
