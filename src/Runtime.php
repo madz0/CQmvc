@@ -72,7 +72,7 @@ class Runtime {
 			$this->params[$index] = $value;
 		}
 		
-		include_once 'FileBase.php';
+		@include_once 'FileBase.php';
 		
 		foreach ($_FILES as $index=>$value) {
 			
@@ -140,7 +140,7 @@ class Runtime {
 				
 				if (file_exists($ctrl_path)) {
 
-					include_once $ctrl_path;
+					@include_once $ctrl_path;
 
 					chdir('App');
 					
@@ -171,7 +171,7 @@ class Runtime {
 				}
 				else {
 
-					include_once 'Route.php';
+					@include_once 'Route.php';
 					include_once 'App/Route/DefaultRoute.php';
 					
 					$route = new DefaultRoute();
@@ -571,7 +571,7 @@ class Runtime {
 	}
 }
 
-$url = $_GET[Runtime::$PARAMS_QUERY];
+$url = @$_GET[Runtime::$PARAMS_QUERY];
 
 if(isset($url) && !is_null($url) && $url != "") {
 

@@ -35,6 +35,8 @@ class FileBase {
 	
 	private $overwriteExiste = true;
 	
+	public $savedPath;
+	
 	public function save($path, $name = null) {
 		
 		if($this->size<=0) {
@@ -42,7 +44,7 @@ class FileBase {
 			return -1;
 		}
 		
-		if(!validateBeforeSave()) {
+		if(!$this->validateBeforeSave()) {
 			
 			return -2;
 		}
@@ -62,13 +64,22 @@ class FileBase {
 		
 		if(!$this->overwriteExiste) {
 			
-			if (file_exists($target_file)) {
+			if (file_exists($path)) {
 				
 				return -4;
 			}
 		}
 		
-		return move_uploaded_file( $_FILES['userFile']['tmp_name'], $path) === true? 1:0;
+		if(move_uploaded_file( $this->tmpName, $path)) {
+		 	
+		 	$this->savedPath = $path;
+		 	
+		 	return 1;
+		 }
+		 
+		 unset($this->savedPath);
+		 
+		 return 0;
 	}
 	
 	public function getBytes() {
