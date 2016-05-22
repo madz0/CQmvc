@@ -31,6 +31,8 @@ include_once 'Validator.php';
 include_once 'MvcUrl.php';
 include_once 'Route.php';
 include_once 'Crypto.php';
+include_once 'class.phpmailer.php';
+include_once 'class.smtp.php';
 
 class Ctrl {
 
@@ -331,6 +333,16 @@ class Ctrl {
 	public function isRendered() {
 		
 		return $this->rendered;
+	}
+	
+	public function getRequestIPAddr() {
+		
+		return $_SERVER['REMOTE_ADDR'];
+	}
+	
+	public function getRequestUserAgent() {
+	
+		return $_SERVER['HTTP_USER_AGENT'];
 	}
 }
 
