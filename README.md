@@ -88,9 +88,9 @@ View -> this folder contains View Classes and Scripts
 Route -> this folder contains Route Class(es)
 ```
 
-Those three folders are the main folders of any Application. In CQmvc, there is a consept of Classpath. Meaning, some folders are in Frameworks Classpath and every classes that you put in there, with a few Rules, can be seen by Controllers and Views and thus no need to include or imports or whatever. This can be a greate saving in developers coding time.
+Those three folders are the main folders of any Application. In CQmvc, there is a consept of ClassPath. Meaning, some folders are in Frameworks Classpath and every classes that you put in there, with a few Rules, can be seen by Controllers and Views and thus no need to include or imports or whatever. This can be a greate saving in developers coding time.
 
-These Classpath folders are:
+These ClassPath folders are:
 
 ```
 Model
@@ -102,11 +102,11 @@ Helper
 Res
 ```
 
-Also Control and View Folder are in Classpath by default. Despite that, For those who like everything to be Organized and Clean in coding, Some scpecial subfolders inside those folders are in Classpath too.
+Also Control and View Folder are in the Classpath by default. Despite that, For those who like everything to be Organized and Clean in coding, Some scpecial subfolders inside those folders are in Classpath too.
 
 For example imagine you have a Controller defined as MyControl.php inside Control class. All Classes that are only used by this Controller, can be inside Model/MyControl/ or Helper/MyControl/ or Res/MyControl/ or ViewModel/MyControl/
 
-Also All Views that are Rendered by MyControl, canbe inside View/MyControl/
+Also All Views that are Rendered by MyControl, can be inside View/MyControl/
 
 And you don't need a single include or whatever for those classes. Classes that are shared between some Controllers Or Views, Should be live directly inside those folders otherwise you need to include them.
 
@@ -118,7 +118,7 @@ Only one thing before starting the examples, and its about the Views.
 
 Like I mentioned before, Views in this Framework, are slightly different.
 
-Each View consists of a View class and a View Script. For example UserView is created by defining a class called UserView extending View in UserView.php and a Script as _UserView.php UserView dynamically finds and Loads that _UserView.php script. The easiest way is to follow that naming rule. But you can change the script name and tell the UserView class what is its name.
+Each View consists of a View class and a View Script. For example UserView is created by defining a class called UserView extending View in UserView.php and a Script as _UserView.php. UserView class dynamically finds and Loads that _UserView.php script. The easiest way is to follow that naming rule. But you can change the script name and tell the UserView class what is its name.
 
 **2) Examples**
 
@@ -242,7 +242,7 @@ public function postTest(UserModel $myModel = null, $id = 0) {
     foreach ($myModel->children as $x) {
 
         echo "$x<br />";
-}
+    }
 }
 ```
 
@@ -415,7 +415,7 @@ class MyShowNewsView extends View {
 
 ```
 
-And finally my View Script
+And finally my View script that is called _MyShowNewsView.php
 
 ```html
 <?php
@@ -556,7 +556,7 @@ brought by the PATH.
 
 CQmvc also provides Templating using Master View Technique. Models and ViewModels can be passed to Views by Constructors directly or assign to View Class Fields. Checkout the example provided with the source inside App folder.
 
-CQmvc also has some helper Classes like SimpleCaptcha from (https://github.com/claviska/simple-php-captcha) Converted to a suitable Class and a UUID Class directly copy and pasted from http://php.net/manual/de/function.uniqid.php. Also there is a Store Class for serializatoins and Also a Simple Validator Class.
+CQmvc also has some helper Classes like SimpleCaptcha from (https://github.com/claviska/simple-php-captcha) Converted to a suitable Class and a UUID Class directly copy and pasted from http://php.net/manual/de/function.uniqid.php. Also there is a Store Class for serializatoins and a Simple Validator Class.
 
 Validator can be used to validate
 
@@ -570,3 +570,11 @@ Validator can be used to validate
 8) Valid dns lables with wildcard (*)
 9) Valid dns names and dns names with wild card
 10) Check if a string starts or ends with some other string
+
+Famous PHPMailer from https://github.com/PHPMailer/PHPMailer/ witch is put in the ClassPath and it can simply be used to send mails by
+
+```
+ $mailer = new PHPMailer;
+ //setting message body and other configurations...
+ $mailer->send();
+```
