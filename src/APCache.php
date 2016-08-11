@@ -23,16 +23,40 @@
  */
 
 include_once 'ICache.php';
+
+if (!function_exists("apcu_fetch")) {
+
+	function apcu_fetch() {}
+	function apcu_store() {}
+	function apcu_exists() {}
+	function apcu_delete() {}
+}
+
+if (!function_exists("apc_fetch")) {
+
+	function apc_fetch() {}
+	function apc_store() {}
+	function apc_exists() {}
+	function apc_delete() {}
+}
+
 class APCache implements ICache {
 	
 	private $ttl = 600; // Time To Live
 	
 	private $bEnabled = false; // APC enabled?
 	
+	private $cacheType = 0;
+	
 	// constructor
 	function __construct($ttl) {
 		
-		$this->bEnabled = extension_loaded('apc');
+		$this->bEnabled = extension_loaded('apc') || extension_loaded('apcu');
+		$this->cacheType = extension_loaded('apc')?1: extension_loaded('apcu')?2:0;
+		
+		if($this->bEnabled) {
+
+		}
 		
 		$this->ttl = $ttl;
 	}
@@ -41,9 +65,20 @@ class APCache implements ICache {
 		
 		if($this->bEnabled) {
 			
-			$bRes = false;
-			$vData = apc_fetch($key, $bRes);
-			return ($bRes) ? $vData :null;
+			if($this->cacheType == 2) {
+				
+				$bRes = false;
+				$vData = apcu_fetch($key, $bRes);
+				return ($bRes) ? $vData :null;
+			}
+			else if($this->cacheType == 1) {
+				
+				$bRes = false;
+				$vData = apc_fetch($key, $bRes);
+				return ($bRes) ? $vData :null;
+			}
+			
+			throw new Exception("Cache type is not implemented");
 		}
 		
 		throw new Exception("No underlying caching found. I need APCU or APC");
@@ -56,7 +91,16 @@ class APCache implements ICache {
 			throw new Exception("No underlying caching found. I need APCU or APC");
 		}
 		
-		return apc_store($key, $data, $this->ttl);
+		if($this->cacheType == 2) {
+
+			return apcu_store($key, $data, $this->ttl);
+		}
+		else if($this->cacheType == 1) {
+
+			return apc_store($key, $data, $this->ttl);
+		}
+		
+		throw new Exception("Cache type is not implemented");
 	}
 	
 	public function delete($key) {
@@ -66,6 +110,15 @@ class APCache implements ICache {
 			throw new Exception("No underlying caching found. I need APCU or APC");
 		}
 		
-		return (apc_exists($key)) ? apc_delete($key) : true;
+		if($this->cacheType == 2) {
+		
+			return (apcu_exists($key)) ? apcu_delete($key) : true;
+		}
+		else if($this->cacheType == 1) {
+		
+			return (apcu_exists($key)) ? apc_delete($key) : true;
+		}
+		
+		throw new Exception("Cache type is not implemented");
 	}
 }
