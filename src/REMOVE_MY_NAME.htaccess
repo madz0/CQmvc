@@ -7,13 +7,13 @@ AddType application/font-woff            .woff
 RewriteEngine On
 
 RewriteCond "%{REQUEST_URI}" .*php$
-RewriteCond %{REQUEST_FILENAME} !Runtime.php
+RewriteCond %{REQUEST_FILENAME} !index.php
 RewriteRule ^(.*)$ /index.html [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} !-f
 RewriteCond %{DOCUMENT_ROOT}/App/%{REQUEST_URI} !-f
-RewriteRule ^(.*)$ Runtime.php?CQMVC_RUNTIME_url_9876786554333AdxZsssErCCCPPRFAwds_X_e=$1 [QSA,L]
+RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/App/%{REQUEST_URI} -f

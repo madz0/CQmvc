@@ -22,8 +22,12 @@
  * under the License.
  */
 ?>
-
+<!doctype html>
 <html>
+<head>
+<link rel="stylesheet" href="<?php print $this->manageAsset('/Content/css/style.css', array('cache_control'=>'public','cache_control_max_age'=>'1D', 'expires'=>'1D'), true); ?>" />
+<!-- <link rel="stylesheet" href="/Content/css/style.css" /> -->
+</head>
 <body>
 
 <fieldset>

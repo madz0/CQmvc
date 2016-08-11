@@ -33,6 +33,7 @@ include_once 'Route.php';
 include_once 'Crypto.php';
 include_once 'class.phpmailer.php';
 include_once 'class.smtp.php';
+include_once 'APCache.php';
 
 class Ctrl {
 
@@ -159,7 +160,7 @@ class Ctrl {
 	
 		$this->rendered = true;
 	
-		ob_start("ob_gzhandler");
+		if(!ob_start("ob_gzhandler")) ob_start();
 	
 		if(func_num_args()==0) {
 				
