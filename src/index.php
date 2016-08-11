@@ -37,8 +37,13 @@ if($validator->startsWith("/Managed")) {
 
 	$cache = new APCache(60);
 	
-	$cfg = $cache->get('/App'.$path);
-	
+	try {
+		$cfg = $cache->get('/App'.$path);
+	} catch (Exception $e) {
+		
+		die($e->getMessage());
+	}
+
 	$file = 'App'.$path;
 	
 	if(!is_null($cfg)) {
@@ -141,16 +146,30 @@ if(isset($path) && !is_null($path)) {
 }
 else {
 
-	$path = $route->getNotFoundPath($url);
+	$notFound = false;
+	$path = $route->getNotFoundPath($url, $notFound);
 
 	if(isset($path) && !is_null($path)) {
 
-		$params = preg_split('/\\//', $url, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
+		$params = preg_split('/\\//', $path, -1, PREG_SPLIT_NO_EMPTY);//explode('/', $path);
 
 		if(count($params) > 1) {
 
+			if($notFound) {
+				
+				header("HTTP/1.0 404 Not Found");
+			}
+			
 			new Runtime($params, $path);
 		}
+		else {
+			
+			header("HTTP/1.0 404 Not Found");
+		}
+	}
+	else {
+		
+		header("HTTP/1.0 404 Not Found");
 	}
 }
 ?>

@@ -176,7 +176,9 @@ class Runtime {
 					
 					$route = new DefaultRoute();
 					
-					$path = $route->getNotFoundPath($url);
+					$notFound = false;
+					
+					$path = $route->getNotFoundPath($url, $notFound);
 					
 					if(isset($path) && !is_null($path)) {
 					
@@ -184,8 +186,21 @@ class Runtime {
 					
 						if(count($params) > 1) {
 					
+							if ($notFound) {
+								
+								header("HTTP/1.0 404 Not Found");
+							}
+							
 							new Runtime($params, $url);
 						}
+						else {
+							
+							header("HTTP/1.0 404 Not Found");
+						}
+					}
+					else {
+						
+						header("HTTP/1.0 404 Not Found");
 					}
 				}
 			}

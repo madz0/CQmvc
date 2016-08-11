@@ -61,12 +61,12 @@ class Route {
 		return $_COOKIE[$key];
 	}
 	
-	protected function getDefaultPath($path = null) {
+	protected function getDefaultPath($path = '') {
 		
 		return null;
 	}
 	
-	protected function getNotFoundPath($path = null) {
+	protected function getNotFoundPath($path = '', & $notFound) {
 	
 		return null;
 	}

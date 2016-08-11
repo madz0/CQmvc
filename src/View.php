@@ -100,7 +100,7 @@ class View {
 		}
 	}
 	
-	public function manageAsset($path, array $headers = null, $withGZIP = false) {
+	public function manageAsset($path, array $headers = null) {
 		
 		$cache = new APCache(60);
 		
@@ -116,7 +116,10 @@ class View {
 		
 		if(!$is_header_null) {
 
-			$headers['gzip'] = $withGZIP;
+			if(!isset($headers['gzip'])) {
+				
+				$headers['gzip'] = false;
+			}
 		}
 		
 		if(!is_null($cfg)) {
@@ -142,7 +145,7 @@ class View {
 				
 					$shouldUpdate = true;
 				}
-				else if($cfg['gzip'] != $withGZIP) {
+				else if($cfg['gzip'] != $headers['gzip']) {
 				
 					$shouldUpdate = true;
 				}
@@ -203,7 +206,7 @@ class View {
 		if ($is_header_null) {
 			
 			$headers = array();
-			$headers['gzip'] = $withGZIP;
+			$headers['gzip'] = false;
 		}
 		
 		if($shouldUpdate) {
@@ -288,7 +291,13 @@ class View {
 					break;
 			}
 
-			$cache->update('/App'.$path, $headers);
+			try {
+
+				$cache->update('/App'.$path, $headers);
+			} catch (Exception $e) {
+				
+				die($e->getMessage());
+			}
 		}
 		
 		return "/Managed".$path;

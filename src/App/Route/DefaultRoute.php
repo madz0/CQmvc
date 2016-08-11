@@ -23,17 +23,19 @@
  */
 class DefaultRoute extends Route {
 	
-	public function getDefaultPath($path = null) {
+	public function getDefaultPath($path = '') {
 		
 		return "/Test/Index";
 	}
 	
-	public function getNotFoundPath($path = null) {
+	public function getNotFoundPath($path = '', & $notFound) {
 	
 		/*
 		 * I just use the default path to answer not founds. But you can handle them differently.
 		 * like 
 		 * return "/Oopse/notFound";
+		 * 
+		 * setting $notFound true make CQmvc to return 404 not found for HTTP status code
 		 */
 		return $this->getDefaultPath($path);
 	}

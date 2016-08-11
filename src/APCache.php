@@ -50,12 +50,16 @@ class APCache implements ICache {
 	
 	// constructor
 	function __construct($ttl) {
-		
-		$this->bEnabled = extension_loaded('apc') || extension_loaded('apcu');
-		$this->cacheType = extension_loaded('apc')?1: extension_loaded('apcu')?2:0;
-		
-		if($this->bEnabled) {
 
+		$this->bEnabled = extension_loaded('apc') || extension_loaded('apcu');
+		
+		if(extension_loaded('apc')) {
+			
+			$this->cacheType = 1;
+		}
+		else if(extension_loaded('apcu')) {
+			
+			$this->cacheType = 2;
 		}
 		
 		$this->ttl = $ttl;
