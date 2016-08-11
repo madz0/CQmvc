@@ -210,8 +210,6 @@ class View {
 			
 			$path_parts = pathinfo($path);
 			
-			$needAccessControllAllowOrigin = false;
-			
 			switch ($path_parts['extension']) {
 				
 				case 'jpeg':
@@ -258,35 +256,30 @@ class View {
 						
 					$headers['content_type'] = 'application/font-ttf';
 					$headers['extension'] = 'ttf';
-					$needAccessControllAllowOrigin = true;
 					break;
 				case 'otf':
 				case 'OTF':
 						
 					$headers['content_type'] = 'application/font-otf';
 					$headers['extension'] = 'otf';
-					$needAccessControllAllowOrigin = true;
 					break;
 				case 'eot':
 				case 'EOT':
 					
 					$headers['content_type'] = 'application/font-eot';
 					$headers['extension'] = 'eot';
-					$needAccessControllAllowOrigin = true;
 					break;		
 				case 'woff':
 				case 'WOFF':
 						
 					$headers['content_type'] = 'application/font-woff';
 					$headers['extension'] = 'woff';
-					$needAccessControllAllowOrigin = true;
 					break;	
 				case 'woff2':
 				case 'WOFF2':
 						
 					$headers['content_type'] = 'application/font-woff2';
 					$headers['extension'] = 'woff2';
-					$needAccessControllAllowOrigin = true;
 					break;
 				default:
 
@@ -294,16 +287,8 @@ class View {
 					$headers['extension'] = $path_parts['extension'];
 					break;
 			}
-			
-			if($needAccessControllAllowOrigin && 
-					!isset($headers['access_control_allow_origin'])) {
-				
-				$headers['access_control_allow_origin'] = "*";
-			}
 
 			$cache->update('/App'.$path, $headers);
-			
-			//die(print_r($cache->get('/App'.$path), true));
 		}
 		
 		return "/Managed".$path;

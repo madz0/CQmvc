@@ -370,7 +370,14 @@ class Runtime {
 			}
 		}
 			
-		$resul = $method->invokeArgs($c,$params);
+		try {
+			
+			$resul = $method->invokeArgs($c,$params);
+			
+		} catch (Exception $e) {
+			
+			print $e->getMessage().' - '.$e->getFile().':'.$e->getLine();
+		}
 		
 		if(isset($resul) && !is_null($resul) && $resul != '' && $resul !== '') {
 			

@@ -46,14 +46,14 @@ class APCache implements ICache {
 			return ($bRes) ? $vData :null;
 		}
 		
-		return null;
+		throw new Exception("No underlying caching found. I need APCU or APC");
 	}
 	
 	public function update($key, $data) {
 		
 		if(!$this->bEnabled) {
 			
-			return false;
+			throw new Exception("No underlying caching found. I need APCU or APC");
 		}
 		
 		return apc_store($key, $data, $this->ttl);
@@ -63,7 +63,7 @@ class APCache implements ICache {
 		
 		if(!$this->bEnabled)  {
 			
-			return true;
+			throw new Exception("No underlying caching found. I need APCU or APC");
 		}
 		
 		return (apc_exists($key)) ? apc_delete($key) : true;
