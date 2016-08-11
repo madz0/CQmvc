@@ -48,8 +48,6 @@ class Runtime {
 	 */
 	private $params;
 	
-	public static $PARAMS_QUERY="CQMVC_RUNTIME_url_9876786554333AdxZsssErCCCPPRFAwds_X_e";
-	
 	public function __construct(array $params, $url) {
 		
 		if($params == null) {
@@ -60,11 +58,8 @@ class Runtime {
 		$this->params = array();
 		
 		foreach ($_GET as $index=>$value) {
-
-			if($index != self::$PARAMS_QUERY) {
 				
-				$this->params[$index] = $value;
-			}
+			$this->params[$index] = $value;
 		}
 
 		foreach ($_POST as $index=>$value) {
