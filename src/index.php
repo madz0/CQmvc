@@ -54,9 +54,13 @@ if($validator->startsWith("/Managed")) {
 			exit;
 		}
 		
-		/* using http://stackoverflow.com/questions/10847157/handling-if-modified-since-header-in-a-php-script */
-		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
-				strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= filemtime($file)) {
+		$fileMdifiedTime = filemtime($file);
+		$etag = md5_file($file);
+		/* using http://stackoverflow.com/questions/10847157/handling-if-modified-since-header-in-a-php-script and 
+		 * http://stackoverflow.com/questions/13197479/how-to-use-etags-in-a-php-file */
+		if ((isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
+				strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $fileMdifiedTime) ||
+				(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag)) {
 					
 			header('HTTP/1.0 304 Not Modified');
 			exit;
@@ -72,17 +76,24 @@ if($validator->startsWith("/Managed")) {
 		}
 	
 		header("Vary: Accept-Encoding");
+		
+		$isValidatorSent = false;
 	
 		if(isset($cfg['cache_control'])) {
 	
 			if(isset($cfg['cache_control_max_age'])) {
 	
-				header(sprintf("Cache-Control: %s, max-age=%s", $cfg['cache_control'], $cfg['cache_control_max_age']), true);
+				header(sprintf("Cache-Control: %s, max-age=%s", $cfg['cache_control'], $cfg['cache_control_max_age']));
 			}
 			else {
 					
-				header(sprintf("Cache-Control: %s", $cfg['cache_control']), true);
+				header(sprintf("Cache-Control: %s", $cfg['cache_control']));
 			}
+			
+			header("Last-Modified: %s", $fileMdifiedTime);
+			header("Etag: %s", $etag);
+			
+			$isValidatorSent = true;
 		}
 	
 		if(isset($cfg['expires'])) {
@@ -91,7 +102,13 @@ if($validator->startsWith("/Managed")) {
 	
 			$vld = new Validator($exp);
 	
-			header(sprintf("Expires: %s", $cfg['expires']), true);
+			header(sprintf("Expires: %s", $cfg['expires']));
+			
+			if(!$isValidatorSent) {
+				
+				header("Last-Modified: %s", $fileMdifiedTime);
+				header("Etag: %s", $etag);
+			}
 		}
 	
 		if(isset($cfg['access_control_allow_origin'])) {
