@@ -75,7 +75,10 @@ class Runtime {
 				
 				$arrFile = $this->diverse_array($value);
 				
-				$previousValue = $this->params[$index];
+				if(isset($this->params[$index])) {
+
+					$previousValue = $this->params[$index];
+				}
 				
 				if(isset($previousValue)) {
 
