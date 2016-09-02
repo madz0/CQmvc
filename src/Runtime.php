@@ -74,6 +74,11 @@ class Runtime {
 			if(is_array($value['name'])) {
 				
 				$arrFile = $this->diverse_array($value);
+
+				if($arrFile === null) {
+					
+					continue;
+				}
 				
 				if(isset($this->params[$index])) {
 
@@ -384,6 +389,7 @@ class Runtime {
 		}
 			
 		try {
+			$captcha = new SimpleCaptcha();
 			
 			$resul = $method->invokeArgs($c,$params);
 			
@@ -560,7 +566,13 @@ class Runtime {
 	    $result = array(); 
 	    foreach($vector as $key1 => $value1) 
 	        foreach($value1 as $key2 => $value2) 
-	            $result[$key2][$key1] = $value2; 
+	            $result[$key2][$key1] = $value2;
+
+	    if(count($result) == 0 || !isset($result[0]['name']) || $result[0]['name'] == '') {
+
+	    	return null;
+	    }
+	        
 	    return $result; 
 	}
 	
