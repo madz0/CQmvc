@@ -29,9 +29,18 @@ class MvcUrl {
 		
 		if($controler == '') {
 			
-			if(strpos($view, '/') !== false) {
-			
-				$this->url = "/$view";
+			$pos = strpos($view, '/');
+			if($pos !== false) {
+				
+				if($pos > 0) {
+					
+					$this->url = "/$view";
+				}
+				else {
+					
+					$this->url = $view;
+				}
+				
 				return;
 			}
 			
@@ -42,14 +51,30 @@ class MvcUrl {
 		
 		if(count($params)>0) {
 
-			$querystring = "?";
+			$querystring = "";
 				
 			foreach ($params as $key => $val) {
-			
-				$querystring .= $key."=".$val."&";
+				
+				if(strpos($key, '#') === 0) {
+
+					$querystring .= $key;
+				}
+				else {
+
+					if($querystring == '') {
+						
+						$querystring = '?';
+					}
+					else {
+						
+						$querystring .= '&';
+					}
+					
+					$querystring .= $key."=".$val;
+				}
 			}
 				
-			$querystring = substr($querystring, 0,strlen($querystring)-1);
+			//$querystring = substr($querystring, 0,strlen($querystring)-1);
 		}
 		
 		if($area == '') {
