@@ -22,7 +22,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-require ("View.php");
+require_once 'View.php';
 
 include_once 'Store.php';
 include_once 'UUID.php';

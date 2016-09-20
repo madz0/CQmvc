@@ -25,6 +25,7 @@
 include_once 'APCache.php';
 include_once 'Runtime.php';
 include_once 'Validator.php';
+include_once 'View.php';
 
 $path = $_SERVER['PATH_INFO'];
 $url = $path;
@@ -38,21 +39,32 @@ if($validator->startsWith("/Managed")) {
 	$cache = new APCache(60);
 	
 	try {
+		
 		$cfg = $cache->get('/App'.$path);
 	} catch (Exception $e) {
 		
+		header("HTTP/1.0 404 Not Found");
 		die($e->getMessage());
 	}
-
+	
+	$shouldUpdate = false;
+	
+	$cfg = View::createAssetManageConfig($path, $shouldUpdate, $cfg);
+	
+	if($shouldUpdate && $cfg !== null) {
+		
+		$cache->update('/App'.$path, $cfg);
+	}
+	
 	$file = 'App'.$path;
 	
+	if(!file_exists($file)) {
+	
+		header("HTTP/1.0 404 Not Found");
+		exit;
+	}
+	
 	if(!is_null($cfg)) {
-		
-		if(!file_exists($file)) {
-		
-			header("HTTP/1.0 404 Not Found");
-			exit;
-		}
 		
 		$fileMdifiedTime = filemtime($file);
 		$etag = md5_file($file);
@@ -65,9 +77,9 @@ if($validator->startsWith("/Managed")) {
 			header('HTTP/1.0 304 Not Modified');
 			exit;
 		}
-	
-		if($cfg['gzip']) {
-	
+
+		if(isset($cfg['gzip']) && $cfg['gzip'] === true) {
+
 			if(!ob_start("ob_gzhandler")) ob_start();
 		}
 		else {
@@ -90,8 +102,8 @@ if($validator->startsWith("/Managed")) {
 				header(sprintf("Cache-Control: %s", $cfg['cache_control']));
 			}
 			
-			header("Last-Modified: %s", $fileMdifiedTime);
-			header("Etag: %s", $etag);
+			header("Last-Modified: $fileMdifiedTime");
+			header("Etag: $etag");
 			
 			$isValidatorSent = true;
 		}
@@ -106,8 +118,8 @@ if($validator->startsWith("/Managed")) {
 			
 			if(!$isValidatorSent) {
 				
-				header("Last-Modified: %s", $fileMdifiedTime);
-				header("Etag: %s", $etag);
+				header("Last-Modified: $fileMdifiedTime");
+				header("Etag: $etag");
 			}
 		}
 	

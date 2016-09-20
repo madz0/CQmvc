@@ -73,6 +73,209 @@ class View {
 		}
 	}
 	
+	public static function createAssetManageConfig(& $path, & $shouldUpdate, $cfg = null) {
+		
+		$validator = new Validator($path);
+		
+		$shouldUpdate = false;
+		
+		if(!$validator->startsWith('/Dynamic')) {
+			
+			return $cfg;
+		}
+		
+		$rawheaders = explode('-', substr($path, 0, strpos($path, '/', 1)));
+		
+		if(!isset($rawheaders) || $rawheaders === false 
+				|| count($rawheaders) < 5) {
+			
+			return $cfg;
+		}
+		
+		$path_parts = pathinfo($path);
+
+		$path = substr($path, strpos($path, '/', 1), strlen($path));
+
+		$headers['cache_control'] = @$rawheaders[1];
+		$headers['cache_control_max_age'] = @$rawheaders[2];
+		$headers['expires'] = @$rawheaders[3];
+		
+		$encoding = @$rawheaders[4] == "true"? true:false;
+
+		$headers['gzip'] = $encoding;
+		
+		$noNeedToExpire = false;
+		$noNeedToCacheConttrolMaxAge = false;
+		
+		if(!isset($headers['gzip']) 
+				|| $headers['gzip'] == '') {
+		
+			$headers['gzip'] = false;
+		}
+		
+		if($cfg !== null) {
+			
+			if(@$headers['expires'] == @$cfg['expires_actual']) {
+			
+				$noNeedToExpire = true;
+			}
+				
+			if (@$headers['cache_control_max_age'] == @$cfg['cache_control_max_age_actual']) {
+			
+				$noNeedToCacheConttrolMaxAge = true;
+			}
+				
+			if(@$headers['cache_control'] != @$cfg['cache_control']) {
+			
+				$shouldUpdate = true;
+			}
+			else if($cfg['gzip'] != $headers['gzip']) {
+			
+				$shouldUpdate = true;
+			}
+			else if(@$headers['access_control_allow_origin'] != @$cfg['access_control_allow_origin']) {
+			
+				$shouldUpdate = true;
+			}
+		}
+		else {
+			
+			$shouldUpdate = true;
+		}
+		
+		if(!$noNeedToExpire && isset($headers['expires']) && $headers['expires'] != '') {
+				
+			$maxAge = $headers['expires'];
+				
+			$vld = new Validator($maxAge);
+				
+			if(is_numeric($maxAge)) {
+		
+				$headers['expires'] = $maxAge;
+				$headers['expires_actual'] = $maxAge;
+			}
+			else if($vld->endsWith('d') || $vld->endsWith('D') || $vld->endsWith('m')
+					|| $vld->endsWith('M') || $vld->endsWith('y') || $vld->endsWith('Y')) {
+		
+				$date = new DateTime();
+				$date->add(new DateInterval('P'.$maxAge));
+
+				$maxAgeTmp = $maxAge;
+
+				$maxAge = $date->format('D, d M Y H:i:s \G\M\T');
+
+				$headers['expires'] = $maxAge;
+				$headers['expires_actual'] = $maxAgeTmp;
+			}
+			else {
+
+				unset($headers['expires']);
+			}
+
+			$shouldUpdate = true;
+		}
+		
+		if(!$noNeedToCacheConttrolMaxAge && isset($headers['cache_control_max_age']) 
+				&& $headers['cache_control_max_age'] != '') {
+				
+			$maxAge = $headers['cache_control_max_age'];
+				
+			$headers['cache_control_max_age_actual'] = $maxAge;
+				
+			$dv = new DateInterval('P'.$maxAge);
+				
+			$headers['cache_control_max_age'] = $dv->s + ($dv->i * 60) + ($dv->h * 3600) + ($dv->d * 3600 * 24) +
+			($dv->m * 30 * 24 * 3600) + ($dv->y * 365 * 24 * 3600);
+				
+			$shouldUpdate = true;
+		}
+		
+		if($shouldUpdate) {
+				
+			switch ($path_parts['extension']) {
+		
+				case 'jpeg':
+				case 'jpg':
+				case 'JPEG':
+				case 'JPG':
+		
+					$headers['content_type'] = 'image/jpeg';
+					$headers['extension'] = 'jpeg';
+					break;
+				case 'png':
+				case 'PNG':
+		
+					$headers['content_type'] = 'image/png';
+					$headers['extension'] = 'png';
+					break;
+				case 'gif':
+				case 'GIF':
+						
+					$headers['content_type'] = 'image/giff';
+					$headers['extension'] = 'gif';
+					break;
+				case 'ico':
+				case 'ICO':
+						
+					$headers['content_type'] = 'image/x-icon';
+					$headers['extension'] = 'ico';
+					break;
+				case 'css':
+				case 'CSS':
+		
+					$headers['content_type'] = 'text/css';
+					$headers['extension'] = 'css';
+					break;
+						
+				case 'js':
+				case 'JS':
+		
+					$headers['content_type'] = 'application/javascript';
+					$headers['extension'] = 'js';
+					break;
+				case 'ttf':
+				case 'TTF':
+		
+					$headers['content_type'] = 'application/font-ttf';
+					$headers['extension'] = 'ttf';
+					break;
+				case 'otf':
+				case 'OTF':
+		
+					$headers['content_type'] = 'application/font-otf';
+					$headers['extension'] = 'otf';
+					break;
+				case 'eot':
+				case 'EOT':
+						
+					$headers['content_type'] = 'application/font-eot';
+					$headers['extension'] = 'eot';
+					break;
+				case 'woff':
+				case 'WOFF':
+		
+					$headers['content_type'] = 'application/font-woff';
+					$headers['extension'] = 'woff';
+					break;
+				case 'woff2':
+				case 'WOFF2':
+		
+					$headers['content_type'] = 'application/font-woff2';
+					$headers['extension'] = 'woff2';
+					break;
+				default:
+		
+					$headers['content_type'] = '';
+					$headers['extension'] = $path_parts['extension'];
+					break;
+			}
+		
+			return $headers;
+		}
+		
+		return $cfg;
+	}
+	
 	public function __construct() {
 
 		spl_autoload_register('View::my_autoloader');
@@ -110,7 +313,7 @@ class View {
 		
 		$noNeedToCacheConttrolMaxAge = false;
 		
-		$shouldUpdate = true;
+		$shouldUpdate = false;
 		
 		$is_header_null = is_null($headers);
 		
@@ -154,6 +357,10 @@ class View {
 					$shouldUpdate = true;
 				}	
 			}
+		}
+		else {
+
+			$shouldUpdate = true;
 		}
 		
 		if(!$is_header_null && !$noNeedToExpire && isset($headers['expires'])) {
