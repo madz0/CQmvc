@@ -72,7 +72,7 @@ if($validator->startsWith("/Managed")) {
 		 * http://stackoverflow.com/questions/13197479/how-to-use-etags-in-a-php-file */
 		if ((isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
 				strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $fileMdifiedTime) ||
-				(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag)) {
+				(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && ( isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag))) {
 					
 			header('HTTP/1.0 304 Not Modified');
 			exit;

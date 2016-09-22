@@ -114,7 +114,7 @@ class Runtime {
 				$this->params[$index] = $previousValue;
 			}
 			else {
-
+				
 				$fileBase = new FileBase();
 					
 				$fileBase->name = $value['name'];
@@ -304,7 +304,7 @@ class Runtime {
 			$is_found = false;
 			
 			if($td->type == TypeDescriptor::$TYPE_OBJ) {
-
+				
 				$nameIndex = $td->name.'->';
 				
 				$objArr = array();
@@ -317,10 +317,21 @@ class Runtime {
 						$objArr[$var] = $value;
 						$is_found = true;
 					}
-					/* else if(strpos($var, $td->name, 0) !== false) {
-						$objArr[$var] = $value;
-						$is_found = true;
-					} */
+				}
+				
+				if(!$is_found) {
+					
+					$nameIndex = $td->name;
+					
+					foreach ($this->params as $var => $value) {
+							
+						$idx = strpos($var, $nameIndex, 0);
+						if( $idx !== false && $idx == 0 ) {
+					
+							$objArr[$var] = $value;
+							$is_found = true;
+						}
+					}
 				}
 				
 				if($is_found) {
@@ -328,7 +339,7 @@ class Runtime {
 					$root = new $td->className;
 					$this->populateComplex($objArr, $root, null, null);
 					$params[] = $root;
-				}
+				} 
 				else if($td->hasDefault) {
 					
 					$params[] = $td->default;
@@ -372,7 +383,6 @@ class Runtime {
 					throw new Exception("Wrong array parameters for ".$view);
 				}
 			}
-			
 			else if ($td->type == TypeDescriptor::$TYPE_PRIMITIVE) {
 				
 				if(isset($this->params[$td->name])) {
@@ -391,8 +401,7 @@ class Runtime {
 		}
 			
 		try {
-			$captcha = new SimpleCaptcha();
-			
+
 			$resul = $method->invokeArgs($c,$params);
 			
 		} catch (Exception $e) {
