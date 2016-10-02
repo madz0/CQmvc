@@ -127,6 +127,22 @@ if($validator->startsWith("/Managed")) {
 	
 			header(sprintf("Access-Control-Allow-Origin: %s", $cfg['access_control_allow_origin']));
 		}
+		
+		if(isset($_SERVER['HTTP_ORIGIN'])) {
+			
+			include_once 'App/Route/DefaultRoute.php';
+			
+			$route = new DefaultRoute();
+			
+			$origin = @$_SERVER['HTTP_ORIGIN'];
+			
+			$ret = $route->checkIfOriginValid($origin);
+
+			if($ret) {
+				
+				header(sprintf("Access-Control-Allow-Origin: %s", $origin));
+			}
+		}
 	
 		header(sprintf("Content-Type: %s", $cfg['content_type']));
 	

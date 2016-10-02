@@ -53,29 +53,45 @@ App -> folder
 
 res -> folder
 
-.htaccess
+.htaccess -> in the case of apache
 
-Ctrl.php
+APCache.php
 
-FileBase.php
+class.phpmailer.php -> mail helper class
+
+class.smtp.php -> mail helper class
+
+Crypto.php -> Crypto helper class
+
+Ctrl.php -> Base class for controllers
+
+FileBase.php -> All uploaded files will be of type FileBase
+
+ICache.php -> Caching interface
 
 index.html
 
-MvcUrl.php
+index.php
 
-Route.php
+MvcUrl.php -> Helper class to deal with mvc urls
 
-Runtime.php
+NGINX-Location.conf -> Nginx rules. these should be placed in virtual host configuration
 
-SimpleCaptcha.php
+Route.php -> Handling url routings
 
-Store.php
+Runtime.php -> Runtime class to convert types
 
-UUID.php
+SimpleCaptcha.php -> Captcha helper class
 
-Validator.php
+Store.php -> Serialization helper class
 
-View.php
+TypeHelper.php -> Type convert helper class
+
+UUID.php -> UUID generator helper class
+
+Validator.php -> Validation helper class
+
+View.php -> Base class for view classes
 ```
 
 Like I said, this structure should be in the root and your Application specific codes live in the App folder. inside App, the structure should be like this:
@@ -138,7 +154,7 @@ public function index() {
 
        $this->view(new Index());
        $this->render();
-       //or use this, it'll GZip the the output
+       //or use this, it'll GZip the output
        //$this->renderGz();
    }
 }
@@ -517,13 +533,14 @@ class DefaultRoute extends Route {
 		return "/Test/Index";
 	}
 	
-	public function getNotFoundPath($path = null) {
+	public function getNotFoundPath($path = '', & $notFound) {
 	
 		/*
 		 * I just use the default path to answer not founds. But you can handle them differently.
 		 * like 
 		 * return "/Oopse/notFound";
 		 */
+		$notFound = false; //If you set notFound as true, 404 NOT Found header will be set in response
 		return $this->getDefaultPath($path);
 	}
 } 
@@ -552,9 +569,15 @@ with english contents:
 return "/en-Us/Home/index";
 
 The Other function (getNotFoundPath) is called when CQmvc could not find the Controller or the Action
-brought by the PATH.   
+brought by the PATH.
 
-CQmvc also provides Templating using Master View Technique. Models and ViewModels can be passed to Views by Constructors directly or assign to View Class Fields. Checkout the example provided with the source inside App folder.
+**4) Master View**   
+
+CQmvc also provides Templating using Master View Technique. Models and ViewModels can be passed to Views by Constructors directly or assign to View Class Fields.
+
+For example:
+
+
 
 CQmvc also has some helper Classes like SimpleCaptcha from (https://github.com/claviska/simple-php-captcha) Converted to a suitable Class and a UUID Class directly copy and pasted from http://php.net/manual/de/function.uniqid.php. Also there is a Store Class for serializatoins and a Simple Validator Class.
 

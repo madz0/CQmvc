@@ -70,5 +70,10 @@ class Route {
 	
 		return null;
 	}
+	
+	protected function checkIfOriginValid($url) {
+		
+		return true;	
+	}
 }
 ?>

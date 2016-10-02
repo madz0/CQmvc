@@ -25,7 +25,12 @@
 
 class Crypto {
 	
-	private static $bf_secret = 'change me in production';
+	private $bf_secret = null;
+	
+	public function __construct($secret) {
+		
+		$this->bf_secret = $secret;
+	}
 	
 	public static function hashEquals($str1, $str2) {
 		
@@ -83,11 +88,11 @@ class Crypto {
 		return true;
 	}
 	
-	public static function bfEncrypt($value) {
+	public function bfEncrypt($value) {
 		
 		/* from SO by Mikelangelo */
 		if(!$value){return false;}
-	   	$key = self::$bf_secret;
+	   	$key = $this->bf_secret;
 	   	$text = $value;
 	   	$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 	   	$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
@@ -95,11 +100,11 @@ class Crypto {
 	   	return trim(base64_encode($crypttext));
 	}
 	
-	public static function bfDecrypt($value) {
+	public function bfDecrypt($value) {
 	
 		/* from SO by Mikelangelo */
 		if(!$value){return false;}
-   		$key = self::$bf_secret;
+   		$key = $this->bf_secret;
    		$crypttext = base64_decode($value); //decode cookie
    		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
    		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);

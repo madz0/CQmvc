@@ -39,4 +39,9 @@ class DefaultRoute extends Route {
 		 */
 		return $this->getDefaultPath($path);
 	}
+	
+	public function checkIfOriginValid($url = null) {
+	
+		return true;
+	}
 }
