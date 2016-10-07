@@ -1,5 +1,4 @@
 <?php
-@session_start();
 /*
  * CQMvc A PHP MVC Framework
  *
@@ -124,6 +123,12 @@ class Ctrl {
 		Ctrl::$CURRENT_CTRL = self::getClassName();
 		
 		spl_autoload_register(get_class($this).'::my_autoloader');
+	}
+	
+	protected function startSession($sessionDomain = null, $sessionPath = '/', $sessionLifeTime = 0) {
+		
+		session_set_cookie_params($sessionLifeTime, $sessionPath, $sessionDomain);
+		@session_start();
 	}
 	
 	protected function view($v) {
@@ -327,6 +332,7 @@ class Ctrl {
 			
 			return;
 		}
+		
 		Header('Content-type: text/xml');
 		print $content;
 	}

@@ -1,5 +1,4 @@
 <?php
-@session_start();
 /*
  * CQMvc A PHP MVC Framework
  *
@@ -26,6 +25,18 @@ class Route {
 	
 	private $clientAddress;
 	
+	public function startSession($sessionDomain = null, $sessionPath = '/', $sessionLifeTime = 0) {
+		
+		if($sessionDomain === null) {
+			
+			$sessionDomain = $_SERVER['HTTP_HOST'];
+		}
+		
+		session_set_cookie_params($sessionLifeTime, $sessionPath, $sessionDomain);
+		
+		@session_start();
+	}
+	
 	public function setClientsAddress($addr) {
 		
 		$this->clientAddress = $addr;
@@ -42,7 +53,7 @@ class Route {
 	}
 	
 	protected function restoreSession($key) {
-	
+		
 		return @$_SESSION[$key];
 	}
 	
