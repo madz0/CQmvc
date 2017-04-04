@@ -54,17 +54,83 @@ class Runtime {
 			
 			return;
 		}
+		
+		$arrayIndex = array();
 
 		$this->params = array();
 		
 		foreach ($_GET as $index=>$value) {
 				
-			$this->params[$index] = $value;
+	      if(is_array($value)) {
+
+		        $i = 0;
+		        foreach ($value as $v) {
+		            
+		            $this->params[$index.'{'.$i++.'}'] = $v;
+		        }
+	       }
+	       else {
+	           
+	           $idx = strpos($index, "{}");
+
+	           if($idx !== false) {
+
+	               $offset = substr($index, 0, $idx);
+	               
+	               if(isset($arrayIndex[$offset])) {
+	                 
+	                   $i = $arrayIndex[$offset];
+	                   $this->params[$offset.'{'.$i.'}'] = $value;
+	                   $arrayIndex[$offset] = $i++;
+	               }
+	               else {
+	                   
+	                   $this->params[$offset.'{0}'] = $value;
+	                   $arrayIndex[$offset] = 1;
+	               } 
+	           }
+	           else {
+	           
+	               $this->params[$index] = $value;
+	           }
+	       }
 		}
 
 		foreach ($_POST as $index=>$value) {
 
-			$this->params[$index] = $value;
+            if(is_array($value)) {
+    
+		        $i = 0;
+		        foreach ($value as $v) {
+		            
+		            $this->params[$index.'{'.$i++.'}'] = $v;
+		        }
+            }
+            else {
+    	           
+	           $idx = strpos($index, "{}");
+
+	           if($idx !== false) {
+
+	               $offset = substr($index, 0, $idx);
+	               
+	               if(isset($arrayIndex[$offset])) {
+	                 
+	                   $i = $arrayIndex[$offset];
+	                   $this->params[$offset.'{'.$i.'}'] = $value;
+	                   $arrayIndex[$offset] = ++$i;
+	               }
+	               else {
+	                   
+	                   $this->params[$offset.'{0}'] = $value;
+	                   $arrayIndex[$offset] = 1;
+	               } 
+	           }
+	           else {
+	           
+	               $this->params[$index] = $value;
+	           }
+	       }
 		}
 		
 		include_once 'FileBase.php';
@@ -143,7 +209,7 @@ class Runtime {
 				
 				if (file_exists($ctrl_path)) {
 
-					@include_once $ctrl_path;
+					include_once $ctrl_path;
 
 					chdir('App');
 					

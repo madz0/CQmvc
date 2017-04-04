@@ -39,6 +39,18 @@ class Validator {
 		
 		return false;
 	}
+	
+	public function isLengthBetween($length1 = 0, $length2=0) {
+	
+	    $length = strlen($this->words);
+	    
+	    if($length<= $length2 && $length >= $length1) {
+	        	
+	        return true;
+	    }
+	
+	    return false;
+	}
 
 	public function isUnpredictable() {
 		
