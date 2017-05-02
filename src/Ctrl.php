@@ -33,6 +33,7 @@ include_once 'Crypto.php';
 include_once 'class.phpmailer.php';
 include_once 'class.smtp.php';
 include_once 'APCache.php';
+require_once 'phpexcel/PHPExcel.php';
 
 class Ctrl {
 
