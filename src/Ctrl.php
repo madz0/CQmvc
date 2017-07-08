@@ -180,6 +180,10 @@ class Ctrl {
 		ob_end_flush();
 	}
 	
+	/**
+	 * @return MvcUrl
+	 * @throws Exception
+	 */
 	protected function getMvcUrl() {
 		
 		$args_num = func_num_args();
