@@ -167,6 +167,7 @@ class SimpleCaptcha {
 		// Draw text
 		imagettftext($captcha, $font_size, $angle, $text_pos_x, $text_pos_y, $color, $font, $captcha_config['code']);
 		// Output image
+		ob_clean();
 		ob_start();
 		imagepng($captcha);
 		$size = ob_get_length();
