@@ -356,6 +356,21 @@ class Ctrl {
 	
 		return $_SERVER['HTTP_USER_AGENT'];
 	}
+	
+	public function addHeader($header, $clean=false, $replace = null, $http_response_code = null) {
+		
+		if($clean) {
+			
+			ob_clean();
+		}
+		
+		header($header, $replace, $http_response_code);
+	}
+	
+	public function setIniValue($iniKey, $iniValue) {
+		
+		ini_set($iniKey, $iniValue);
+	}
 }
 
 ?>
