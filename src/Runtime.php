@@ -177,6 +177,7 @@ class Runtime {
 					
 					$previousValue[$index2] = $fileBase;
 				}
+				
 				$this->params[$index] = $previousValue;
 			}
 			else {
@@ -276,7 +277,10 @@ class Runtime {
 				}
 			}
 		}
-		catch (Exception $e) {}
+		catch (Exception $e) {
+		    
+		    die(print_r($e, true));
+		}
 	}
 	
 	private function getParamDescriptor(ReflectionParameter $param) {
