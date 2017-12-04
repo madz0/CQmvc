@@ -177,7 +177,6 @@ class Runtime {
 					
 					$previousValue[$index2] = $fileBase;
 				}
-				
 				$this->params[$index] = $previousValue;
 			}
 			else {
@@ -277,10 +276,7 @@ class Runtime {
 				}
 			}
 		}
-		catch (Exception $e) {
-		    
-		    die(print_r($e, true));
-		}
+		catch (Exception $e) {}
 	}
 	
 	private function getParamDescriptor(ReflectionParameter $param) {
@@ -341,7 +337,6 @@ class Runtime {
 	
 	private function populate($control, $view, array $path) {
 		
-
 		$reflector = new ReflectionClass($control);
 
 		/* @var $method = ReflectionMethod */
@@ -455,7 +450,7 @@ class Runtime {
 			}
 			else if ($td->type == TypeDescriptor::$TYPE_PRIMITIVE) {
 				
-				if(isset($this->params[$td->name])) {
+				if(isset($this->params[$td->name]) && $this->params[$td->name] !== '') {
 					
 					$params[] = $this->params[$td->name];
 				}
@@ -472,7 +467,8 @@ class Runtime {
 			
 		try {
 
-			$resul = $method->invokeArgs($c,$params);
+		    //die(print_r($params, true));
+			$resul = $method->invokeArgs($c, $params);
 			
 		} catch (Exception $e) {
 			
